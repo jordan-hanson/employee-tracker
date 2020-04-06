@@ -23,7 +23,7 @@ function runTracker() {
             message: "What would you like to do?",
             choices: [
                 "View All Employees By Department",
-                "View All Employees by Manager",
+                "View All Employees By Manager",
                 "Add Employee",
                 "Remove Employee",
                 "Update Employee Role",
@@ -82,8 +82,9 @@ function viewDepartmentTeam() {
             ]
         })
         .then(function (answer) {
-            const query = "SELECT department FROM employee_tracker GROUP BY department HAVING ?";
+            const query = "SELECT * FROM employee_tracker WHERE department = ?";
             connection.query(query, [answer.department], function (err, res) {
+                console.table(res)
                 if (err) throw err;
                 for (var i = 0; i < res.length; i++) {
                     console.log("--------------------------------")
@@ -93,16 +94,76 @@ function viewDepartmentTeam() {
                 runTracker();
             });
         });
+};
+
+function viewManagerTeam() {
+    inquirer
+        .prompt({
+            name: "manager",
+            type: "list",
+            message: "Which Managers Team do you want to view?",
+            choices: [
+                "Tayler Ktestakis",
+                "Todd Hanson",
+                "Ryan Johnson",
+                "Austin Reems"
+            ]
+        })
+        .then(function (answer) {
+            const query = "SELECT * FROM employee_tracker WHERE manager = ?";
+            connection.query(query, [answer.manager], function (err, res) {
+                console.table(res)
+                if (err) throw err;
+                for (var i = 0; i < res.length; i++) {
+                    console.log("--------------------------------")
+                    console.log("Manager:" + res[i].manager);
+                    console.log("this is the query", query)
+                }
+                runTracker();
+            });
+        });
 }
+function addEmployee() {
+    inquirer
+        .prompt([{
+            name: "first_name",
+            type: "input",
+            message: "What is the employee's first name?"
+        },
+        {
+            name: "last_name",
+            type: "input",
+            message: "What is the employee's last name?"
+        },
+        {
+            name: "role",
+            type: "list",
+            message: "What is the employee's role?",
+            choices: [
+                "Sales Lead",
+                "Salesperson",
+                "Lead Engineer",
+                "Software Engineer",
+                "Account Manager",
+                "Accountant",
+                "Legal Team Lead"
+            ]
+        },
+        {
+            name: "manager",
+            type: "list",
+            message: "Who is the employee's manager?",
+            choices: [
+                "Tayler Ktestakis",
+                "Todd Hanson",
+                "Ryan Johnson",
+                "Austin Reems"
+            ]
+        }
+        ])
+        .then(function (answer) {
+            console.log("adding employee", answer.manager, answer.role, answer.last_name, answer.first_name)
+            runTracker();
+        })
 
-
-
-
-//  why is my afterConnection not being called.
-// function afterConnection() {
-//     connection.query("SELECT * FROM employees", function (err, res) {
-//         if (err) throw err;
-//         console.log("my response from database", res)
-//         connection.end();
-//     })
-// }
+}
