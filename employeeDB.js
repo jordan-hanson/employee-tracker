@@ -3,7 +3,7 @@ const inquirer = require("inquirer")
 
 const connection = mysql.createConnection({
     host: "localhost",
-    port: 2200,
+    port: 3306,
     user: "root",
     password: process.env.MYSQL_PASSWORD,
     database: "employee_db"
@@ -67,6 +67,34 @@ function runTracker() {
             }
         })
 }
+
+function viewDepartmentTeam() {
+    inquirer
+        .prompt({
+            name: "department",
+            type: "list",
+            message: "What department do you want to view?",
+            choices: [
+                "Sales",
+                "Engineering",
+                "Finance",
+                "Legal"
+            ]
+        })
+        .then(function (answer) {
+            const query = "SELECT department FROM employee_tracker GROUP BY department HAVING ?";
+            connection.query(query, [answer.department], function (err, res) {
+                if (err) throw err;
+                for (var i = 0; i < res.length; i++) {
+                    console.log("--------------------------------")
+                    console.log("Department:" + res[i].department);
+                    console.log("this is the query", query)
+                }
+                runTracker();
+            });
+        });
+}
+
 
 
 

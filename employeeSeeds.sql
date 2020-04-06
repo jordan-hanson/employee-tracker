@@ -14,3 +14,6 @@ CREATE TABLE employee_tracker (
     manager VARCHAR(50) NULL,
     PRIMARY KEY(id)
 );
+
+INSERT INTO employee_tracker (first_name, last_name, title, department, salary, manager)
+VALUES ("Jordan", "Hanson", "Full Stack Developer", "Engineering", 75000, "Tayler Ktestakis");
