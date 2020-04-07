@@ -123,7 +123,94 @@ function viewManagerTeam() {
             });
         });
 };
+function addEmployee() {
+    inquirer
+        .prompt([{
+            name: "first_name",
+            type: "input",
+            message: "What is the employee's first name?"
+        },
+        {
+            name: "last_name",
+            type: "input",
+            message: "What is the employee's last name?"
+        },
+        {
+            name: "title",
+            type: "list",
+            message: "What is the employee's title?",
+            choices: [
+                "Sales Lead",
+                "Salesperson",
+                "Lead Engineer",
+                "Software Engineer",
+                "Account Manager",
+                "Accountant",
+                "Legal Team Lead"
+            ]
+        },
+        {
+            name: "department",
+            type: "list",
+            message: "What department is the employee in?",
+            choices: [
+                "Engineering",
+                "Legal",
+                "Sales",
+                "Finance"
+            ]
+        },
+        {
+            name: "manager",
+            type: "list",
+            message: "Who is the employee's manager?",
+            choices: [
+                "Tayler Ktestakis",
+                "Todd Hanson",
+                "Ryan Johnson",
+                "Austin Reems"
+            ]
+        }
+        ])
+        .then(function (answer) {
+            // console.table("this is what answers i got back", answer.first_name, answer.last_name, answer.role, answer.salary, answer.department, answer.manager)
+            let query = "INSERT INTO employee (first_name, last_name, title, department, manager) VALUES (?, ?, ?, ?, ?)";
+            connection.query(query, [(answer.first_name), (answer.last_name), [answer.title], [answer.department], [answer.manager]], function (err, res) {
+                if (err) throw err;
+                console.table(res)
+                console.log("-------------------------------")
+                console.log("Employee record added: ", res.affectedRows)
+                runTracker();
+            });
+        });
 
+}
+
+function removeEmployee() {
+    const query = "SELECT * FROM employee";
+    connection.query(query, function (err, res) {
+        console.log("---------------------------------------------")
+        console.table(res)
+        console.log("---------------------------------------------")
+        if (err) throw err;
+        for (var i = 0; i < res.length; i++);
+    })
+    inquirer
+        .prompt({
+            name: "id",
+            type: "number",
+            message: "What is the id of the employee you want to delete?"
+        })
+        .then(function (answer) {
+            const sql = "DELETE FROM employee WHERE id = ?"
+            connection.query(sql, (answer.id), function (err, res) {
+                if (err) throw err;
+                console.table(res)
+                console.log("Employee record deleted: " + res.affectedRows);
+                runTracker();
+            });
+        });
+}
 // function addEmployee() {
 //     inquirer
 //         .prompt([{
@@ -137,7 +224,7 @@ function viewManagerTeam() {
 //             message: "What is the employee's last name?"
 //         },
 //         {
-//             name: "role",
+//             name: "title",
 //             type: "list",
 //             message: "What is the employee's title?",
 //             choices: [
@@ -182,7 +269,7 @@ function viewManagerTeam() {
 //         .then(function (answer) {
 //             // console.table("this is what answers i got back", answer.first_name, answer.last_name, answer.role, answer.salary, answer.department, answer.manager)
 //             let query = "INSERT INTO employee SET ?";
-//             connection.query(query, (answer.first_name), (answer.last_name), [answer.role], [answer.department], (answer.salary), [answer.manager], function (err, res) {
+//             connection.query(query, (answer.first_name), (answer.last_name), [answer.title], [answer.department], (answer.salary), [answer.manager], function (err, res) {
 //                 console.table(res)
 //                 if (err) throw err;
 //                 for (var i = 0; i < res.length; i++) {
@@ -194,35 +281,3 @@ function viewManagerTeam() {
 //         });
 
 // }
-
-function removeEmployee() {
-    const query = "SELECT * FROM employee";
-    connection.query(query, function (err, res) {
-        console.log("---------------------------------------------")
-        console.table(res)
-        console.log("---------------------------------------------")
-        if (err) throw err;
-        for (var i = 0; i < res.length; i++);
-    })
-    inquirer
-        .prompt({
-            name: "id",
-            type: "number",
-            message: "What is the id of the employee you want to delete?"
-        })
-        .then(function (answer) {
-            const sql = "DELETE FROM employee WHERE id = ?"
-            connection.query(sql, (answer.id), function (err, res) {
-                if (err) throw err;
-                console.table(res)
-                console.log("Employee record deleted: " + res.affectedRows);
-                runTracker();
-            });
-        });
-    // var query = "SELECT * from employee";
-    // connection.query(query, function(err, res){
-    //     for (var i = 0; i < res.length; i++){
-    //         console.table
-    //     }
-    // })
-}
