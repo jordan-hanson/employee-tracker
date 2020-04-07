@@ -19,7 +19,7 @@ function runTracker() {
     inquirer
         .prompt({
             name: "action",
-            type: "list",
+            type: "rawlist",
             message: "What would you like to do?",
             choices: [
                 "View All Employees By Department",
@@ -82,7 +82,7 @@ function viewDepartmentTeam() {
             ]
         })
         .then(function (answer) {
-            const query = "SELECT * FROM employee_tracker WHERE department = ?";
+            const query = "SELECT * FROM employee WHERE department = ?";
             connection.query(query, [answer.department], function (err, res) {
                 console.table(res)
                 if (err) throw err;
@@ -194,3 +194,35 @@ function viewManagerTeam() {
 //         });
 
 // }
+
+function removeEmployee() {
+    const query = "SELECT * FROM employee";
+    connection.query(query, function (err, res) {
+        console.log("---------------------------------------------")
+        console.table(res)
+        console.log("---------------------------------------------")
+        if (err) throw err;
+        for (var i = 0; i < res.length; i++);
+    })
+    inquirer
+        .prompt({
+            name: "id",
+            type: "number",
+            message: "What is the id of the employee you want to delete?"
+        })
+        .then(function (answer) {
+            const sql = "DELETE FROM employee WHERE id = ?"
+            connection.query(sql, (answer.id), function (err, res) {
+                if (err) throw err;
+                console.table(res)
+                console.log("Employee record deleted: " + res.affectedRows);
+                runTracker();
+            });
+        });
+    // var query = "SELECT * from employee";
+    // connection.query(query, function(err, res){
+    //     for (var i = 0; i < res.length; i++){
+    //         console.table
+    //     }
+    // })
+}
