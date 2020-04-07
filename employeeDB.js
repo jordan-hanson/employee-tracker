@@ -110,7 +110,7 @@ function viewManagerTeam() {
             ]
         })
         .then(function (answer) {
-            const query = "SELECT * FROM employee_tracker WHERE manager = ?";
+            const query = "SELECT * FROM employee WHERE manager = ?";
             connection.query(query, [answer.manager], function (err, res) {
                 console.table(res)
                 if (err) throw err;
@@ -122,48 +122,75 @@ function viewManagerTeam() {
                 runTracker();
             });
         });
-}
-function addEmployee() {
-    inquirer
-        .prompt([{
-            name: "first_name",
-            type: "input",
-            message: "What is the employee's first name?"
-        },
-        {
-            name: "last_name",
-            type: "input",
-            message: "What is the employee's last name?"
-        },
-        {
-            name: "role",
-            type: "list",
-            message: "What is the employee's role?",
-            choices: [
-                "Sales Lead",
-                "Salesperson",
-                "Lead Engineer",
-                "Software Engineer",
-                "Account Manager",
-                "Accountant",
-                "Legal Team Lead"
-            ]
-        },
-        {
-            name: "manager",
-            type: "list",
-            message: "Who is the employee's manager?",
-            choices: [
-                "Tayler Ktestakis",
-                "Todd Hanson",
-                "Ryan Johnson",
-                "Austin Reems"
-            ]
-        }
-        ])
-        .then(function (answer) {
-            console.log("adding employee", answer.manager, answer.role, answer.last_name, answer.first_name)
-            runTracker();
-        })
+};
 
-}
+// function addEmployee() {
+//     inquirer
+//         .prompt([{
+//             name: "first_name",
+//             type: "input",
+//             message: "What is the employee's first name?"
+//         },
+//         {
+//             name: "last_name",
+//             type: "input",
+//             message: "What is the employee's last name?"
+//         },
+//         {
+//             name: "role",
+//             type: "list",
+//             message: "What is the employee's title?",
+//             choices: [
+//                 "Sales Lead",
+//                 "Salesperson",
+//                 "Lead Engineer",
+//                 "Software Engineer",
+//                 "Account Manager",
+//                 "Accountant",
+//                 "Legal Team Lead"
+//             ]
+//         },
+//         {
+//             name: "deparment",
+//             type: "list",
+//             message: "What department is the employee in?",
+//             choices: [
+//                 "Engineering",
+//                 "Legal",
+//                 "Sales",
+//                 "Finance"
+
+//             ]
+//         },
+//         {
+//             name: "salary",
+//             type: "input",
+//             message: "What is the salary of the employee?"
+//         },
+//         {
+//             name: "manager",
+//             type: "list",
+//             message: "Who is the employee's manager?",
+//             choices: [
+//                 "Tayler Ktestakis",
+//                 "Todd Hanson",
+//                 "Ryan Johnson",
+//                 "Austin Reems"
+//             ]
+//         }
+//         ])
+//         .then(function (answer) {
+//             // console.table("this is what answers i got back", answer.first_name, answer.last_name, answer.role, answer.salary, answer.department, answer.manager)
+//             let query = "INSERT INTO employee SET ?";
+//             connection.query(query, (answer.first_name), (answer.last_name), [answer.role], [answer.department], (answer.salary), [answer.manager], function (err, res) {
+//                 console.table(res)
+//                 if (err) throw err;
+//                 for (var i = 0; i < res.length; i++) {
+//                     console.log("----------------")
+//                     console.log("this is query", query)
+//                 }
+//                 runTracker();
+//             })
+//         });
+
+// }

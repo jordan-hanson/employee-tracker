@@ -4,16 +4,16 @@ CREATE DATABASE employee_db;
 
 USE employee_db;
 
-CREATE TABLE employee_tracker (
+CREATE TABLE employee (
     id INT AUTO_INCREMENT NOT NULL,
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     title VARCHAR(50) NOT NULL,
-    department VARCHAR(30) NOT NULL,
-    salary INT default 0,
-    manager VARCHAR(50) NULL,
+    role_id INT NULL,
+    manager_id INT NULL,
     PRIMARY KEY(id)
 );
 
 INSERT INTO employee_tracker (first_name, last_name, title, department, salary, manager)
 VALUES ("Jordan", "Hanson", "Full Stack Developer", "Engineering", 75000, "Tayler Ktestakis");
+
