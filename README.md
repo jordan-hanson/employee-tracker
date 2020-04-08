@@ -4,10 +4,6 @@ Overview
 
 ​ This application will allow you to write a note with a title and save that note, you can access that note by clicking on the title. you may also delete the note by clicking on the trash can icon to the right of the note. ​
 
-Gallery
-
-​![How to Use](EmployeeTracker.mov)
-
 ​Tech and Features Used
 
 ​```
