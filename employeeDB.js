@@ -198,7 +198,6 @@ function removeEmployee() {
         console.table(res)
         console.log("---------------------------------------------")
         if (err) throw err;
-        for (var i = 0; i < res.length; i++);
     })
     inquirer
         .prompt({
@@ -237,19 +236,30 @@ function addRole() {
         console.table(res)
         console.log("------------------------------")
         if (err) throw err;
-        updateRole()
+    });
+}
+
+function viewAllEmpWithRole() {
+    const sql = "SELECT * FROM employee_role"
+    connection.query(sql, function (err, res) {
+        console.log("-----------------------------------")
+        console.table(res)
+        console.log("-----------------------------------")
+        if (err) throw err;
+        // runTracker();
     });
 }
 
 function updateRole() {
+    viewAllEmpWithRole()
     inquirer
         .prompt([{
             name: "index",
             type: "number",
-            message: "What is the index number of the employee you want to add a role to?"
+            message: "What is the index number of the employee you want to update a role to?"
         },
         {
-            name: "role",
+            name: "role_id",
             type: "list",
             message: "What role would you like to assign to your employee?",
             choices: [
@@ -266,8 +276,8 @@ function updateRole() {
         }
         ])
         .then(function (answer) {
-            const query = "UPDATE role FROM employee WHERE index = ?"
-            connection.query(query, [(answer.index), [answer.role]], function (err, res) {
+            const query = "UPDATE employee_role SET role_id = ? WHERE index = ?"
+            connection.query(query, [[answer.role_id], (answer.index)], function (err, res) {
                 if (err) throw err;
                 console.table(res)
                 console.log("Employee record updated: " + res.affectedRows);
@@ -276,6 +286,36 @@ function updateRole() {
         });
 }
 
+function updateManager() {
+    viewAllEmployees()
+    inquirer
+        .prompt([{
+            name: "id",
+            type: "number",
+            message: "What is the id number of the employee you want to update their manager to?"
+        },
+        {
+            name: "manager",
+            type: "list",
+            message: "What role would you like to assign to your employee?",
+            choices: [
+                "Tayler Ktestakis",
+                "Todd Hanson",
+                "Ryan Johnson",
+                "Austin Reems"
+            ]
+        }
+        ])
+        .then(function (answer) {
+            const query = "UPDATE employee SET manager = ? WHERE id = ?"
+            connection.query(query, [[answer.manager], (answer.id)], function (err, res) {
+                if (err) throw err;
+                console.table(res)
+                console.log("Employee record updated: " + res.affectedRows);
+                runTracker();
+            });
+        });
+}
 
 // function addEmployee() {
 //     inquirer
