@@ -29,7 +29,7 @@ function runTracker() {
                 "Add Role to Employee",
                 "Update Employee Role",
                 "Update Employee Manager",
-                "View All Roles"
+                "Exit Program"
             ]
         })
         .then(function (answer) {
@@ -62,11 +62,7 @@ function runTracker() {
                     updateManager();
                     break;
 
-                case "View All Roles":
-                    viewAllRoles();
-                    break;
-
-                case "Exit":
+                case "Exit Program":
                     connection.end();
                     break;
             }
@@ -173,7 +169,10 @@ function addEmployee() {
                 "Tayler Ktestakis",
                 "Todd Hanson",
                 "Ryan Johnson",
-                "Austin Reems"
+                "Austin Reems",
+                "Georgia Lund",
+                "Jody Lloyd",
+                "None"
             ]
         }
         ])
@@ -186,6 +185,8 @@ function addEmployee() {
                 console.log("-------------------------------")
                 console.log("Employee record added: ", res.affectedRows)
                 viewAllEmployees();
+                console.log("-------------------------------")
+                runTracker();
             });
         });
 
@@ -212,6 +213,7 @@ function removeEmployee() {
                 console.table(res)
                 console.log("Employee record deleted: " + res.affectedRows);
                 viewAllEmployees();
+                runTracker();
             });
         });
 }
@@ -229,13 +231,14 @@ function viewAllEmployees() {
 
 function addRole() {
     viewAllEmployees()
-    const sql = "SELECT employee.first_name AS firstname, employee.last_name AS lastname, employee.title AS title, employee.department AS department, employee.manager AS manager, role.role_id AS role, role.salary AS salary FROM employee LEFT JOIN role ON employee.department = role.department"
+    const sql = "SELECT employee.first_name AS firstname, employee.last_name AS lastname, employee.title AS title, employee.department AS department, employee.manager AS manager, role_table.role_id AS role, role_table.salary AS salary FROM employee LEFT JOIN role_table ON employee.department = role_table.department"
     connection.query(sql, function (err, res) {
         // let joined = res;
         console.log("------------------------------")
         console.table(res)
         console.log("------------------------------")
         if (err) throw err;
+        runTracker();
     });
 }
 
@@ -254,9 +257,9 @@ function updateRole() {
     viewAllEmpWithRole()
     inquirer
         .prompt([{
-            name: "index",
+            name: "id",
             type: "number",
-            message: "What is the index number of the employee you want to update a role to?"
+            message: "What is the id number of the employee you want to update a role to?"
         },
         {
             name: "role_id",
@@ -276,11 +279,12 @@ function updateRole() {
         }
         ])
         .then(function (answer) {
-            const query = "UPDATE employee_role SET role_id = ? WHERE index = ?"
+            const query = "UPDATE employee_role SET role_id = ? WHERE id = ?"
             connection.query(query, [[answer.role_id], (answer.index)], function (err, res) {
                 if (err) throw err;
                 console.table(res)
                 console.log("Employee record updated: " + res.affectedRows);
+                viewAllEmployees();
                 runTracker();
             });
         });
@@ -312,78 +316,9 @@ function updateManager() {
                 if (err) throw err;
                 console.table(res)
                 console.log("Employee record updated: " + res.affectedRows);
+                viewAllEmployees();
                 runTracker();
             });
         });
 }
 
-// function addEmployee() {
-//     inquirer
-//         .prompt([{
-//             name: "first_name",
-//             type: "input",
-//             message: "What is the employee's first name?"
-//         },
-//         {
-//             name: "last_name",
-//             type: "input",
-//             message: "What is the employee's last name?"
-//         },
-//         {
-//             name: "title",
-//             type: "list",
-//             message: "What is the employee's title?",
-//             choices: [
-//                 "Sales Lead",
-//                 "Salesperson",
-//                 "Lead Engineer",
-//                 "Software Engineer",
-//                 "Account Manager",
-//                 "Accountant",
-//                 "Legal Team Lead"
-//             ]
-//         },
-//         {
-//             name: "deparment",
-//             type: "list",
-//             message: "What department is the employee in?",
-//             choices: [
-//                 "Engineering",
-//                 "Legal",
-//                 "Sales",
-//                 "Finance"
-
-//             ]
-//         },
-//         {
-//             name: "salary",
-//             type: "input",
-//             message: "What is the salary of the employee?"
-//         },
-//         {
-//             name: "manager",
-//             type: "list",
-//             message: "Who is the employee's manager?",
-//             choices: [
-//                 "Tayler Ktestakis",
-//                 "Todd Hanson",
-//                 "Ryan Johnson",
-//                 "Austin Reems"
-//             ]
-//         }
-//         ])
-//         .then(function (answer) {
-//             // console.table("this is what answers i got back", answer.first_name, answer.last_name, answer.role, answer.salary, answer.department, answer.manager)
-//             let query = "INSERT INTO employee SET ?";
-//             connection.query(query, (answer.first_name), (answer.last_name), [answer.title], [answer.department], (answer.salary), [answer.manager], function (err, res) {
-//                 console.table(res)
-//                 if (err) throw err;
-//                 for (var i = 0; i < res.length; i++) {
-//                     console.log("----------------")
-//                     console.log("this is query", query)
-//                 }
-//                 runTracker();
-//             })
-//         });
-
-// }
