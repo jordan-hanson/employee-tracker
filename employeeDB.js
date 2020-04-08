@@ -26,6 +26,7 @@ function runTracker() {
                 "View All Employees By Manager",
                 "Add Employee",
                 "Remove Employee",
+                "Add Role to Employee",
                 "Update Employee Role",
                 "Update Employee Manager",
                 "View All Roles"
@@ -47,6 +48,10 @@ function runTracker() {
 
                 case "Remove Employee":
                     removeEmployee();
+                    break;
+
+                case "Add Role to Employee":
+                    addRole();
                     break;
 
                 case "Update Employee Role":
@@ -180,7 +185,7 @@ function addEmployee() {
                 console.table(res)
                 console.log("-------------------------------")
                 console.log("Employee record added: ", res.affectedRows)
-                runTracker();
+                viewAllEmployees();
             });
         });
 
@@ -207,10 +212,71 @@ function removeEmployee() {
                 if (err) throw err;
                 console.table(res)
                 console.log("Employee record deleted: " + res.affectedRows);
+                viewAllEmployees();
+            });
+        });
+}
+
+function viewAllEmployees() {
+    const sql = "SELECT * FROM employee"
+    connection.query(sql, function (err, res) {
+        console.log("-----------------------------------")
+        console.table(res)
+        console.log("-----------------------------------")
+        if (err) throw err;
+        // runTracker();
+    });
+}
+
+function addRole() {
+    viewAllEmployees()
+    const sql = "SELECT employee.first_name AS firstname, employee.last_name AS lastname, employee.title AS title, employee.department AS department, employee.manager AS manager, role.role_id AS role, role.salary AS salary FROM employee LEFT JOIN role ON employee.department = role.department"
+    connection.query(sql, function (err, res) {
+        // let joined = res;
+        console.log("------------------------------")
+        console.table(res)
+        console.log("------------------------------")
+        if (err) throw err;
+        updateRole()
+    });
+}
+
+function updateRole() {
+    inquirer
+        .prompt([{
+            name: "index",
+            type: "number",
+            message: "What is the index number of the employee you want to add a role to?"
+        },
+        {
+            name: "role",
+            type: "list",
+            message: "What role would you like to assign to your employee?",
+            choices: [
+                "Assistant Manager",
+                "UX Designer",
+                "Accounting Data Analyst",
+                "Front End Master",
+                "Back End Node Specialist",
+                "Lead Salesman",
+                "Sales Manager Assistant",
+                "Paralegal",
+                "Lawyer"
+            ]
+        }
+        ])
+        .then(function (answer) {
+            const query = "UPDATE role FROM employee WHERE index = ?"
+            connection.query(query, [(answer.index), [answer.role]], function (err, res) {
+                if (err) throw err;
+                console.table(res)
+                console.log("Employee record updated: " + res.affectedRows);
                 runTracker();
             });
         });
 }
+
+
 // function addEmployee() {
 //     inquirer
 //         .prompt([{
